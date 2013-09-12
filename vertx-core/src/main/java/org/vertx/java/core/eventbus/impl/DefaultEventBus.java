@@ -38,7 +38,7 @@ import org.vertx.java.core.net.NetSocket;
 import org.vertx.java.core.net.impl.ServerID;
 import org.vertx.java.core.parsetools.RecordParser;
 import org.vertx.java.core.spi.cluster.AsyncMultiMap;
-import org.vertx.java.core.spi.cluster.ChoosableSet;
+import org.vertx.java.core.spi.cluster.ChoosableIterable;
 import org.vertx.java.core.spi.cluster.ClusterManager;
 
 import java.util.List;
@@ -457,7 +457,7 @@ public class DefaultEventBus implements EventBus {
     return server;
   }
 
-  private void sendToSubs(ChoosableSet<ServerID> subs, BaseMessage message) {
+  private void sendToSubs(ChoosableIterable<ServerID> subs, BaseMessage message) {
     if (message.send) {
       // Choose one
       ServerID sid = subs.choose();
@@ -499,10 +499,10 @@ public class DefaultEventBus implements EventBus {
         }
       } else {
         if (subs != null) {
-          subs.get(message.address, new AsyncResultHandler<ChoosableSet<ServerID>>() {
-            public void handle(AsyncResult<ChoosableSet<ServerID>> event) {
+          subs.get(message.address, new AsyncResultHandler<ChoosableIterable<ServerID>>() {
+            public void handle(AsyncResult<ChoosableIterable<ServerID>> event) {
               if (event.succeeded()) {
-                ChoosableSet<ServerID> serverIDs = event.result();
+                ChoosableIterable<ServerID> serverIDs = event.result();
                 if (serverIDs != null && !serverIDs.isEmpty()) {
                   sendToSubs(serverIDs, message);
                 } else {

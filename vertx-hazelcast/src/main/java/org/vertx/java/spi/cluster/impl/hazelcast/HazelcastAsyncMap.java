@@ -23,7 +23,7 @@ import org.vertx.java.core.spi.cluster.AsyncMap;
  * under the License.
  *
  */
-public class HazelcastAsyncMap<K, V> implements AsyncMap<K, V> {
+class HazelcastAsyncMap<K, V> implements AsyncMap<K, V> {
 
   private final VertxSPI vertx;
   private final IMap<K, V> map;

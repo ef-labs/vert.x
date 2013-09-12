@@ -27,7 +27,7 @@ import org.vertx.java.core.logging.impl.LoggerFactory;
 import org.vertx.java.core.spi.Action;
 import org.vertx.java.core.spi.VertxSPI;
 import org.vertx.java.core.spi.cluster.AsyncMultiMap;
-import org.vertx.java.core.spi.cluster.ChoosableSet;
+import org.vertx.java.core.spi.cluster.ChoosableIterable;
 
 import java.util.Collection;
 import java.util.Map;
@@ -37,14 +37,12 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * @author <a href="http://tfox.org">Tim Fox</a>
  */
-public class HazelcastAsyncMultiMap<K, V> implements AsyncMultiMap<K, V>, EntryListener<K, V> {
+class HazelcastAsyncMultiMap<K, V> implements AsyncMultiMap<K, V>, EntryListener<K, V> {
 
   private static final Logger log = LoggerFactory.getLogger(HazelcastAsyncMultiMap.class);
 
   private final VertxSPI vertx;
   private final com.hazelcast.core.MultiMap<K, V> map;
-
-  //TODO need to optimise this for DataSerializable
 
   /*
    The Hazelcast near cache is very slow so we use our own one.
@@ -90,9 +88,9 @@ public class HazelcastAsyncMultiMap<K, V> implements AsyncMultiMap<K, V>, EntryL
   }
 
   @Override
-  public void get(final K k, final Handler<AsyncResult<ChoosableSet<V>>> resultHandler) {
+  public void get(final K k, final Handler<AsyncResult<ChoosableIterable<V>>> resultHandler) {
     ChoosableSet<V> entries = cache.get(k);
-    DefaultFutureResult<ChoosableSet<V>> result = new DefaultFutureResult<>();
+    DefaultFutureResult<ChoosableIterable<V>> result = new DefaultFutureResult<>();
     if (entries != null && entries.isInitialised()) {
       result.setResult(entries).setHandler(resultHandler);
     } else {
@@ -102,7 +100,7 @@ public class HazelcastAsyncMultiMap<K, V> implements AsyncMultiMap<K, V>, EntryL
           }
         }, new AsyncResultHandler<Collection<V>>() {
           public void handle(AsyncResult<Collection<V>> result) {
-            DefaultFutureResult<ChoosableSet<V>> sresult = new DefaultFutureResult<>();
+            DefaultFutureResult<ChoosableIterable<V>> sresult = new DefaultFutureResult<>();
             if (result.succeeded()) {
               Collection<V> entries = result.result();
               ChoosableSet<V> sids;

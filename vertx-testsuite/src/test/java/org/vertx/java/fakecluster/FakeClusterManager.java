@@ -218,9 +218,9 @@ public class FakeClusterManager implements ClusterManager {
     }
 
     @Override
-    public void get(final K k, Handler<AsyncResult<ChoosableSet<V>>> asyncResultHandler) {
-      vertx.executeBlocking(new Action<ChoosableSet<V>>() {
-        public ChoosableSet<V> perform() {
+    public void get(final K k, Handler<AsyncResult<ChoosableIterable<V>>> asyncResultHandler) {
+      vertx.executeBlocking(new Action<ChoosableIterable<V>>() {
+        public ChoosableIterable<V> perform() {
           return map.get(k);
         }
       }, asyncResultHandler);

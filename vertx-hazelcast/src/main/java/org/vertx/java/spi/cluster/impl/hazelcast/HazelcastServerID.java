@@ -26,7 +26,7 @@ import java.io.IOException;
 /**
  * @author <a href="http://tfox.org">Tim Fox</a>
  */
-public class HazelcastServerID extends ServerID implements DataSerializable {
+class HazelcastServerID extends ServerID implements DataSerializable {
 
   public HazelcastServerID() {
   }

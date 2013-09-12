@@ -47,7 +47,7 @@ public interface AsyncMultiMap<K, V> {
    * @param resultHandler This will be called with the list of values for the key. The type of the values returned
    *                      must be {@link ChoosableSet}
    */
-  void get(K k, Handler<AsyncResult<ChoosableSet<V>>> resultHandler);
+  void get(K k, Handler<AsyncResult<ChoosableIterable<V>>> resultHandler);
 
   /**
    * Remove a value from the list of values for that key in the map.

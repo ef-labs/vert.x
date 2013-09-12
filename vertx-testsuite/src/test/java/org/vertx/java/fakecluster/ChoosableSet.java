@@ -15,9 +15,10 @@
  *
  */
 
-package org.vertx.java.core.spi.cluster;
+package org.vertx.java.fakecluster;
 
 import org.vertx.java.core.impl.ConcurrentHashSet;
+import org.vertx.java.core.spi.cluster.ChoosableIterable;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -27,9 +28,8 @@ import java.util.Set;
  *
  * @author <a href="http://tfox.org">Tim Fox</a>
  */
-public class ChoosableSet<T> implements Iterable<T> {
+class ChoosableSet<T> implements ChoosableIterable<T> {
 
-  private volatile boolean initialised;
   private final Set<T> ids;
   private volatile Iterator<T> iter;
 
@@ -39,14 +39,6 @@ public class ChoosableSet<T> implements Iterable<T> {
 
   public int size() {
     return ids.size();
-  }
-
-  public boolean isInitialised() {
-    return initialised;
-  }
-
-  public void setInitialised() {
-    this.initialised = true;
   }
 
   public void add(T elem) {
