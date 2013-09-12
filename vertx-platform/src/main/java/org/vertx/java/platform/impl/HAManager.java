@@ -388,15 +388,14 @@ public class HAManager {
     int size = toDeployOnQuorum.size();
     if (size != 0) {
       log.info("There are " + size + " HA deployments waiting on a quorum. These will now be deployed");
-      // Make a copy to avoid comod exceptions
-      for (final Runnable task: new ArrayList<>(toDeployOnQuorum)) {
+      Runnable task;
+      while ((task = toDeployOnQuorum.poll()) != null) {
         try {
           task.run();
         } catch (Throwable t) {
           log.error("Failed to run redeployment task", t);
         }
       }
-      toDeployOnQuorum.clear();
     }
   }
 
