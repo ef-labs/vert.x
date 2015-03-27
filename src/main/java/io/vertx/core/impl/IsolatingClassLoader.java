@@ -18,6 +18,9 @@ package io.vertx.core.impl;
 
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Before delegating to the parent, this classloader attempts to load the class first
@@ -28,6 +31,22 @@ import java.net.URLClassLoader;
  * @author <a href="http://tfox.org">Tim Fox</a>
  */
 public class IsolatingClassLoader extends URLClassLoader {
+
+  public static final String CLASS_LOADER_SYSTEM_CLASSES = "vertx.class-loader-system-classes";
+  private static final List<String> systemClasses;
+
+  static {
+    String prop = null;
+    try {
+      prop = System.getProperty(CLASS_LOADER_SYSTEM_CLASSES);
+    } catch(SecurityException e) {
+    }
+    if (prop != null && !prop.isEmpty()) {
+      systemClasses = Arrays.asList(prop.split("\\|"));
+    } else {
+      systemClasses = Collections.emptyList();
+    }
+  }
 
   IsolatingClassLoader(URL[] urls, ClassLoader parent) {
     super(urls, parent);
@@ -71,6 +90,7 @@ public class IsolatingClassLoader extends URLClassLoader {
         name.startsWith("io.vertx.core") ||
         name.startsWith("com.hazelcast") ||
         name.startsWith("io.netty.") ||
-        name.startsWith("com.fasterxml.jackson");
+        name.startsWith("com.fasterxml.jackson") ||
+        systemClasses.stream().anyMatch(name::startsWith);
   }
 }
